@@ -11,5 +11,6 @@
 	<mvc:view-controller path="/" view-name="home" />
 
 	<context:component-scan base-package="org.dvcama.lodview" />
+	<context:component-scan base-package="net.bygle.portal" />
 
 </beans>
