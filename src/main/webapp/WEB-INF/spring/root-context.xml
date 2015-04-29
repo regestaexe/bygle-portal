@@ -6,6 +6,7 @@
 	<bean id="conf" class="org.dvcama.lodview.conf.ConfigurationBean">
 		<property name="confFile" value="conf.ttl" />
 	</bean>
+	
 	<bean id="confLinked" class="org.dvcama.lodview.conf.ConfigurationBean">
 		<property name="confFile" value="conf-linked.ttl" />
 	</bean>
@@ -14,5 +15,8 @@
 		<property name="ontoDir" value="ontologies" />
 	</bean>
 
+	<bean id="confBygle" class="net.bygle.portal.conf.ConfigurationBean">
+		<property name="confFile" value="conf-bygle.ttl" />
+	</bean>
 
 </beans>

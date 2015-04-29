@@ -1,17 +1,20 @@
 package net.bygle.portal.controllers;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bygle.portal.conf.ConfigurationBean;
+
 import org.dvcama.lodview.bean.OntologyBean;
 import org.dvcama.lodview.bean.ResultBean;
 import org.dvcama.lodview.bean.TripleBean;
 import org.dvcama.lodview.builder.ResourceBuilder;
-import org.dvcama.lodview.conf.ConfigurationBean;
 import org.dvcama.lodview.controllers.ErrorController;
 import org.dvcama.lodview.utils.Misc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +33,10 @@ public class BygleController {
 	private MessageSource messageSource;
 
 	@Autowired
-	ConfigurationBean conf;
+	org.dvcama.lodview.conf.ConfigurationBean conf;
+
+	@Autowired
+	ConfigurationBean confBygle;
 
 	@Autowired
 	OntologyBean ontoBean;
@@ -46,8 +52,9 @@ public class BygleController {
 		return resource(conf, model, req, res, locale, output, "", colorPair);
 	}
 
-	public Object resource(ConfigurationBean conf, ModelMap model, HttpServletRequest req, HttpServletResponse res, Locale locale, String output, String forceIRI, String colorPair) throws UnsupportedEncodingException {
+	public Object resource(org.dvcama.lodview.conf.ConfigurationBean conf, ModelMap model, HttpServletRequest req, HttpServletResponse res, Locale locale, String output, String forceIRI, String colorPair) throws UnsupportedEncodingException {
 		model.addAttribute("conf", conf);
+		model.addAttribute("confBygle", confBygle);
 
 		String IRIsuffix = new UrlPathHelper().getLookupPathForRequest(req).replaceAll("/lodview/", "/");
 		model.addAttribute("path", new UrlPathHelper().getContextPath(req).replaceAll("/lodview/", "/"));
@@ -81,7 +88,17 @@ public class BygleController {
 			model.addAttribute("ontoBean", ontoBean);
 			enrichResponse(r, req, res);
 			model.addAttribute("colorPair", Misc.guessColor(colorPair, r, conf));
-			return "resource";
+
+			if (confBygle.getMainIRIs().contains(IRI)) {
+				LinkedHashMap<String, ResultBean> result = new LinkedHashMap<String, ResultBean>();
+				for (String rdfclass : confBygle.getMultiConfValue(IRI, "mainClasses")) {
+					result.put(rdfclass, new net.bygle.portal.builder.ResourceBuilder(messageSource).buildHtmlMainClassSearch(IRI, rdfclass, -1, locale, conf, confBygle, ontoBean));
+				}
+				model.addAttribute("result", result);
+				return "bygle-resource";
+			} else {
+				return "resource";
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (e.getMessage() != null && e.getMessage().startsWith("404")) {
