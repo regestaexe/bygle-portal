@@ -43,8 +43,6 @@ public class SPARQLEndPoint {
 			auth = new SimpleAuthenticator(conf.getAuthUsername(), conf.getAuthPassword().toCharArray());
 		}
 		for (String query : queries) {
-			// System.out.println("-- " + parseQuery(query, IRI, aProperty,
-			// start, filter));
 			QueryExecution qe = QueryExecutionFactory.sparqlService(conf.getEndPointUrl(), parseQuery(query, IRI, aProperty, start, filter), auth);
 			results = moreThenOneQuery(qe, results, 0, overrideProperty);
 		}
@@ -114,7 +112,7 @@ public class SPARQLEndPoint {
 					results.add(rb);
 				} catch (Exception e) {
 					System.err.println("error? " + e.getMessage());
-					//e.printStackTrace();
+					// e.printStackTrace();
 				}
 			}
 		} catch (Exception ez) {
@@ -269,7 +267,7 @@ public class SPARQLEndPoint {
 			query = query.replaceAll("\\$\\{FILTERPROPERTY\\}", filter);
 		}
 		query = query.replaceAll("\\$\\{STARTFROM\\}", "" + start);
-
+		System.out.println("************* "+query);
 		return query;
 	}
 

@@ -104,7 +104,6 @@
 							</c:forEach>
 						</div>
 					</c:forEach>
-
 					<%
 						/* second level of blank nodes */
 					%>

@@ -55,34 +55,50 @@
 <> a conf:Configuration;
 		
 		## IRIs that will be used as "pages" of the portal
-		conf:mainIRIs	<http://dbpedia.org/resource/Resource_Description_Framework> , <http://dbpedia.org/ontology/Settlement> , <http://dbpedia.org/ontology/Pope> 
+		conf:mainIRIs	<http://example.com/website> , <http://example.com/dataset/conservatori> , <http://example.com/dataset/musei> , <http://example.com/dataset/biblioteche> 
 		.
 
 
 		## for each IRI/page a specific configuration 
-<http://dbpedia.org/resource/Resource_Description_Framework> 
+<http://example.com/website>
 
-		conf:mainClasses	<http://dbpedia.org/ontology/Settlement> , <http://dbpedia.org/ontology/Pope> ;
-		conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
-		conf:mainCountQuery """select (count(distinct ?s) AS ?c)  {?s a <${CLASS}>} """
+		conf:searchBox	[conf:mainClasses	 <http://example.com/Museum> ;
+						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
+						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] ;
+		
+		conf:searchBox	[conf:mainClasses	 <http://example.com/Library> ;
+						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
+						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] ;
+ 
+		conf:searchBox	[conf:mainClasses	 <http://example.com/HolderOfArchives> ;
+						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
+						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] 
+		
 		.
 
-
 		## another IRI/page
-<http://dbpedia.org/ontology/Pope> 
+ <http://example.com/dataset/biblioteche> 
 
-		conf:mainClasses	<http://dbpedia.org/ontology/Settlement> , <http://dbpedia.org/ontology/Pope> ;
+		conf:mainClasses	<http://example.com/Library> ;
 		conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
-		conf:mainCountQuery """select (count(distinct ?s) AS ?c)  {?s a <${CLASS}>} """
+		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """
 		.		
 
 
 		## another IRI/page
-<http://dbpedia.org/ontology/Settlement> 
+<http://example.com/dataset/conservatori> 
 
-		conf:mainClasses	<http://dbpedia.org/ontology/Settlement> , <http://dbpedia.org/ontology/Pope> ;
+		conf:mainClasses	<http://example.com/Museum>;
 		conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
-		conf:mainCountQuery """select (count(distinct ?s) AS ?c)  {?s a <${CLASS}>} """
+		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """
+		.	
+
+		## another IRI/page
+<http://example.com/dataset/musei> 
+
+		conf:mainClasses	<http://example.com/HolderOfArchives>;
+		conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
+		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """
 		.		
 
 

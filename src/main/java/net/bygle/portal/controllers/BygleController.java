@@ -1,8 +1,9 @@
 package net.bygle.portal.controllers;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.Cookie;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.bygle.portal.conf.ConfigurationBean;
 
 import org.dvcama.lodview.bean.OntologyBean;
+import org.dvcama.lodview.bean.PropertyBean;
 import org.dvcama.lodview.bean.ResultBean;
 import org.dvcama.lodview.bean.TripleBean;
 import org.dvcama.lodview.builder.ResourceBuilder;
@@ -25,6 +27,10 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UrlPathHelper;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 @Controller
 @RequestMapping(value = "**/html")
@@ -55,6 +61,7 @@ public class BygleController {
 	public Object resource(org.dvcama.lodview.conf.ConfigurationBean conf, ModelMap model, HttpServletRequest req, HttpServletResponse res, Locale locale, String output, String forceIRI, String colorPair) throws UnsupportedEncodingException {
 		model.addAttribute("conf", conf);
 		model.addAttribute("confBygle", confBygle);
+		model.addAttribute("Misc", new Misc());
 
 		String IRIsuffix = new UrlPathHelper().getLookupPathForRequest(req).replaceAll("/lodview/", "/");
 		model.addAttribute("path", new UrlPathHelper().getContextPath(req).replaceAll("/lodview/", "/"));
@@ -90,11 +97,54 @@ public class BygleController {
 			model.addAttribute("colorPair", Misc.guessColor(colorPair, r, conf));
 
 			if (confBygle.getMainIRIs().contains(IRI)) {
-				LinkedHashMap<String, ResultBean> result = new LinkedHashMap<String, ResultBean>();
-				for (String rdfclass : confBygle.getMultiConfValue(IRI, "mainClasses")) {
-					result.put(rdfclass, new net.bygle.portal.builder.ResourceBuilder(messageSource).buildHtmlMainClassSearch(IRI, rdfclass, -1, locale, conf, confBygle, ontoBean));
+
+				Model m = confBygle.getConfModel();
+
+				// loading search boxes
+				NodeIterator iter = m.listObjectsOfProperty(m.createResource(IRI), m.createProperty(m.getNsPrefixURI("conf"), "searchBox"));
+
+				LinkedHashMap<PropertyBean, List<TripleBean>> result = new LinkedHashMap<PropertyBean, List<TripleBean>>();
+				LinkedHashMap<PropertyBean, TripleBean> resultCount = new LinkedHashMap<PropertyBean, TripleBean>();
+
+				List<String> queries = new ArrayList<String>();
+
+				while (iter.hasNext()) {
+					try {
+
+						RDFNode node = iter.next();
+						RDFNode mainClasses = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainClasses")).next();
+						RDFNode mainQuery = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainQuery")).next();
+						RDFNode mainCountQuery = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainCountQuery")).next();
+						String rdfclass = mainClasses.toString();
+
+						PropertyBean p = new PropertyBean();
+						p.setNsProperty(Misc.toNsResource(rdfclass, conf));
+						p.setProperty(rdfclass);
+
+						// finding the page link for every classes
+						for (String pageIri : confBygle.getMainIRIs()) {
+							if (!pageIri.equals(IRI)) {
+								for (String rdfpageclass : confBygle.getMultiConfValue(pageIri, "mainClasses")) {
+									if (rdfpageclass.equals(rdfclass)) {
+										p.setPropertyUrl(Misc.toBrowsableUrl(pageIri, conf));
+										break;
+									}
+								}
+
+							}
+						}
+						result.put(p, new net.bygle.portal.builder.ResourceBuilder(messageSource).buildHtmlMainClassSearch(mainQuery.toString(), rdfclass, -1, locale, conf, confBygle, ontoBean));
+						resultCount.put(p, new net.bygle.portal.builder.ResourceBuilder(messageSource).buildHtmlMainClassCount(mainCountQuery.toString(), rdfclass, locale, conf, confBygle, ontoBean).get(0));
+						
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 				}
+
 				model.addAttribute("result", result);
+				model.addAttribute("resultCount", resultCount);
 				return "bygle-resource";
 			} else {
 				return "resource";

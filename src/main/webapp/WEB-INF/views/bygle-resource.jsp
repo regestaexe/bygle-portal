@@ -1,7 +1,11 @@
 <%@page session="true"%><%@taglib uri="http://www.springframework.org/tags" prefix="sp"%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%><html version="XHTML+RDFa 1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml-rdfa-2.xsd" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:foaf="http://xmlns.com/foaf/0.1/">
 <head data-color="${colorPair}" profile="http://www.w3.org/1999/xhtml/vocab">
 <title>${results.getTitle()}&mdash;byg.portal</title>
+<%-- asking lodview to load map scripts --%>${results.setLatitude("0") }
 <jsp:include page="inc/header.jsp"></jsp:include>
+<link href="${conf.getStaticResourceURL()}css/bygle-portal.css" rel="stylesheet" type="text/css" />
+<!-- managing maps  -->
+<script src="${conf.getStaticResourceURL()}leaflet/leaflet.markercluster.js"></script>
 </head>
 <body id="top">
 	<article>
@@ -60,14 +64,43 @@
 				</c:otherwise>
 			</c:choose>
 		</header>
- 
-			<aside class="empty"></aside>
-	 
+
+		<aside class="empty"></aside>
+		<div id="directs" class="bygportal">
+			<div class="c1">
+				<h3>
+					<sp:message code='title.resources' text='resources' />
+				</h3>
+			</div>
+			<div class="c2">
+				<c:forEach items='${result.keySet()}' var="prop">
+					<label class="c3">
+						<a data-label="${prop.getLabel()}" data-comment="${prop.getComment()}"><c:choose>
+								<c:when test='${prop.getNsProperty().startsWith("null:")}'>&lt;${prop.getProperty().replaceAll("([#/])([^#/]+)$","$1<span>$2")}</span>&gt;</c:when>
+								<c:otherwise>${prop.getNsProperty().replaceAll(":",":<span>")}</span>
+								</c:otherwise>
+							</c:choose></a>
+					</label>
+					<div class="c4 value isOpened">
+						<a href="${prop.getPropertyUrl()}" class="bygpaginator" data-property="${prop.getNsProperty()}">${resultCount.get(prop).getValue() } <sp:message code='label.resources' text='resources' /></a><span class="lloadingb" style="display: none"></span>
+						<c:forEach items='${result.get(prop)}' var="iel">
+							<div class="toOneLine">
+								<a href="${Misc.toBrowsableUrl(iel.getIRI(), conf)}">${iel.getValue()}</a>
+							</div>
+						</c:forEach>
+					</div>
+				</c:forEach>
+			</div>
+		</div>
+		<div id="bygmapcnt">
+			<div id="bygmap"></div>
+		</div>
 
 		<jsp:include page="inc/custom_footer.jsp"></jsp:include>
 	</article>
 	<jsp:include page="inc/footer.jsp"></jsp:include>
 	<c:import url="inc/scripts.jsp"></c:import>
+	<c:import url="inc/bygle-scripts.jsp"></c:import>
 	<div id="loadPanel">
 		<p id="lmessage">
 			<span class="lloading"></span><span class="content">&nbsp;</span>
