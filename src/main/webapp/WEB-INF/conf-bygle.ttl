@@ -55,48 +55,48 @@
 <> a conf:Configuration;
 		
 		## IRIs that will be used as "pages" of the portal
-		conf:mainIRIs	<http://example.com/website> , <http://example.com/dataset/conservatori> , <http://example.com/dataset/musei> , <http://example.com/dataset/biblioteche> 
+		conf:mainIRIs	<http://dati.camera.it/ocd/Organization.rdf/cd> , <http://dati.camera.it/ocd/deputato> , <http://dati.camera.it/ocd/organo> , <http://dati.camera.it/ocd/atto> 
 		.
 
 
 		## for each IRI/page a specific configuration 
-<http://example.com/website>
+<http://dati.camera.it/ocd/Organization.rdf/cd>
 
-		conf:searchBox	[conf:mainClasses	 <http://example.com/Museum> ;
+		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/deputato> ;
 						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
 						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] ;
 		
-		conf:searchBox	[conf:mainClasses	 <http://example.com/Library> ;
+		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/atto> ;
 						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
 						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] ;
  
-		conf:searchBox	[conf:mainClasses	 <http://example.com/HolderOfArchives> ;
+		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/organo> ;
 						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
 						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] 
 		
 		.
 
 		## another IRI/page
- <http://example.com/dataset/biblioteche> 
+ <http://dati.camera.it/ocd/atto> 
 
-		conf:mainClasses	<http://example.com/Library> ;
+		conf:mainClasses	<http://dati.camera.it/ocd/atto> ;
 		conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
 		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """
 		.		
 
 
 		## another IRI/page
-<http://example.com/dataset/conservatori> 
+<http://dati.camera.it/ocd/deputato> 
 
-		conf:mainClasses	<http://example.com/Museum>;
+		conf:mainClasses	<http://dati.camera.it/ocd/deputato>;
 		conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
 		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """
 		.	
 
 		## another IRI/page
-<http://example.com/dataset/musei> 
+<http://dati.camera.it/ocd/organo> 
 
-		conf:mainClasses	<http://example.com/HolderOfArchives>;
+		conf:mainClasses	<http://dati.camera.it/ocd/organo>;
 		conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
 		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """
 		.		

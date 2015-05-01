@@ -59,11 +59,11 @@
 ## 	IRIs namespace we use to replace the webapp base (eg. http://localhost:8080/lodview/), an
 ##	installation on dbpedia domain should use <http://dbpedia.org/resource/> 
 	
-	conf:IRInamespace <http://example.com/> ;
+	conf:IRInamespace <http://dati.camera.it/ocd> ;
 
 ## 	EndPoint
 
-	conf:endpoint <http://localhost:8890/sparql>;	
+	conf:endpoint <http://dati.camera.it/sparql>;	
 
 ########## give it a try opening http://localhost:8080/lodview/Rome
 
