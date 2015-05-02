@@ -39,13 +39,12 @@
 			<c:choose>
 				<c:when test="${results.getDescriptionProperty() != null}">
 					<div id="abstract">
-						<label class="c1">
-							<a data-label="${results.getDescriptionProperty().getLabel()}" data-comment="${results.getDescriptionProperty().getComment()}" href="${results.getDescriptionProperty().getPropertyUrl()}"> <c:choose>
+						<label class="c1"> <a data-label="${results.getDescriptionProperty().getLabel()}" data-comment="${results.getDescriptionProperty().getComment()}" href="${results.getDescriptionProperty().getPropertyUrl()}"> <c:choose>
 									<c:when test='${results.getDescriptionProperty().getNsProperty().startsWith("null:")}'>&lt;${results.getDescriptionProperty().getProperty().replaceAll("([#/])([^#/]+)$","$1<span>$2")}</span>&gt;</c:when>
 									<c:otherwise>${results.getDescriptionProperty().getNsProperty().replaceAll(":",":<span>")}</span>
 									</c:otherwise>
 								</c:choose>
-							</a>
+						</a>
 						</label>
 						<div class="c2 value">
 							<c:forEach items='${results.getLiterals(results.getMainIRI()).get(results.getDescriptionProperty())}' var="el">
@@ -74,8 +73,7 @@
 			</div>
 			<div class="c2">
 				<c:forEach items='${result.keySet()}' var="prop">
-					<label class="c3">
-						<a data-label="${prop.getLabel()}" data-comment="${prop.getComment()}"><c:choose>
+					<label class="c3"> <a data-label="${prop.getLabel()}" href="${prop.getPropertyUrl()}" data-comment="${prop.getComment()}"><c:choose>
 								<c:when test='${prop.getNsProperty().startsWith("null:")}'>&lt;${prop.getProperty().replaceAll("([#/])([^#/]+)$","$1<span>$2")}</span>&gt;</c:when>
 								<c:otherwise>${prop.getNsProperty().replaceAll(":",":<span>")}</span>
 								</c:otherwise>
@@ -95,7 +93,30 @@
 		<div id="bygmapcnt">
 			<div id="bygmap"></div>
 		</div>
-
+		<div id="directs" class="bygportal">
+			<div class="c1">
+				<h3>
+					<sp:message code='title.facets' text='facets' />
+				</h3>
+			</div>
+			<div class="c2">
+				<c:forEach items='${facets.keySet()}' var="prop">
+					<label class="c3"> <a data-label="${prop.getLabel()}"  href="${prop.getPropertyUrl()}"  data-comment="${prop.getComment()}"><c:choose>
+								<c:when test='${prop.getNsProperty().startsWith("null:")}'>&lt;${prop.getProperty().replaceAll("([#/])([^#/]+)$","$1<span>$2")}</span>&gt;</c:when>
+								<c:otherwise>${prop.getNsProperty().replaceAll(":",":<span>")}</span>
+								</c:otherwise>
+							</c:choose></a>
+					</label>
+					<div class="c4 value isOpened">
+						<c:forEach items='${facets.get(prop)}' var="pair">
+							<div class="toNobreakLine">
+								<a href="#">${pair.getKey()} <span>${pair.getValue() }</span></a>
+							</div>
+						</c:forEach>
+					</div>
+				</c:forEach>
+			</div>
+		</div>
 		<jsp:include page="inc/custom_footer.jsp"></jsp:include>
 	</article>
 	<jsp:include page="inc/footer.jsp"></jsp:include>

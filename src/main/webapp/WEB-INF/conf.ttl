@@ -4,6 +4,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix ocd: <http://dati.camera.it/ocd/> . 
 @prefix dc: <http://purl.org/dc/elements/1.1/> .
 @prefix dcterms: <http://purl.org/dc/terms/> . 
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
@@ -59,7 +60,7 @@
 ## 	IRIs namespace we use to replace the webapp base (eg. http://localhost:8080/lodview/), an
 ##	installation on dbpedia domain should use <http://dbpedia.org/resource/> 
 	
-	conf:IRInamespace <http://dati.camera.it/ocd> ;
+	conf:IRInamespace <http://dati.camera.it/ocd/> ;
 
 ## 	EndPoint
 

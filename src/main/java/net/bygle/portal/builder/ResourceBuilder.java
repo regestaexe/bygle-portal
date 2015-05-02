@@ -2,6 +2,7 @@ package net.bygle.portal.builder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.TreeMap;
 
 import net.bygle.portal.conf.ConfigurationBean;
 
+import org.apache.commons.collections.map.LinkedMap;
 import org.apache.jena.riot.Lang;
 import org.dvcama.lodview.bean.OntologyBean;
 import org.dvcama.lodview.bean.ResultBean;
@@ -69,7 +71,7 @@ public class ResourceBuilder {
 
 	}
 
-	public TreeMap<String, Integer> buildHtmlFacets(String query, Locale locale, org.dvcama.lodview.conf.ConfigurationBean conf, ConfigurationBean confBygle, OntologyBean ontoBean) {
+	public Map<String, Integer> buildHtmlFacets(String query, Locale locale, org.dvcama.lodview.conf.ConfigurationBean conf, ConfigurationBean confBygle, OntologyBean ontoBean) {
 		String preferredLanguage = conf.getPreferredLanguage();
 		if (preferredLanguage.equals("auto")) {
 			preferredLanguage = locale.getLanguage();
@@ -85,9 +87,16 @@ public class ResourceBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		TreeMap<String, Integer> result = new TreeMap<String, Integer>();
+
+		Map<String, Integer> result = new LinkedHashMap<String, Integer>();
 		for (TripleBean triple : triples) {
-			result.put(triple.getProperty().getProperty(), Integer.parseInt(triple.getValue()));
+
+			// try to leave lodview unmodified
+			// typed literal
+			String facet = triple.getIRI().replaceAll("\"(.+)\"\\^\\^.+", "$1");
+			// untyped literal
+			facet = facet.replaceAll("^\"(.+)\"$", "$1");
+			result.put(facet, Integer.parseInt(triple.getValue()));
 		}
 		return result;
 

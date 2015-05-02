@@ -109,7 +109,7 @@ public class BygleController {
 				LinkedHashMap<PropertyBean, List<TripleBean>> result = new LinkedHashMap<PropertyBean, List<TripleBean>>();
 				LinkedHashMap<PropertyBean, TripleBean> resultCount = new LinkedHashMap<PropertyBean, TripleBean>();
 
-				LinkedHashMap<PropertyBean, TreeMap<String, Integer>> facets = new LinkedHashMap<PropertyBean, TreeMap<String, Integer>>();
+				LinkedHashMap<PropertyBean, Map<String, Integer>> facets = new LinkedHashMap<PropertyBean, Map<String, Integer>>();
 
 				List<String> queries = new ArrayList<String>();
 
@@ -123,21 +123,15 @@ public class BygleController {
 						RDFNode mainCountQuery = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainCountQuery")).next();
 						String rdfclass = mainClasses.toString();
 
-						PropertyBean p = new PropertyBean();
-						p.setNsProperty(Misc.toNsResource(rdfclass, conf));
-						p.setProperty(rdfclass);
+						PropertyBean p = Misc.generatePropertyBean(rdfclass, locale.getLanguage(), ontoBean, conf);
 
 						// finding the page link for every classes
-						for (String pageIri : confBygle.getMainIRIs()) {
-							if (!pageIri.equals(IRI)) {
-								for (String rdfpageclass : confBygle.getMultiConfValue(pageIri, "mainClasses")) {
-									if (rdfpageclass.equals(rdfclass)) {
-										p.setPropertyUrl(Misc.toBrowsableUrl(pageIri, conf));
-										break;
-									}
-								}
 
+						for (String rdfpageclass : confBygle.getMultiConfValue(IRI, "mainClasses")) {
+							if (rdfpageclass.equals(rdfclass)) {
+								p.setPropertyUrl(Misc.toBrowsableUrl(IRI, conf));
 							}
+
 						}
 
 						result.put(p, builder.buildHtmlMainClassSearch(mainQuery.toString(), rdfclass, -1, locale, conf, confBygle, ontoBean));
@@ -147,7 +141,7 @@ public class BygleController {
 						e.printStackTrace();
 					}
 
-				}
+				} 
 				model.addAttribute("result", result);
 				model.addAttribute("resultCount", resultCount);
 
@@ -160,11 +154,9 @@ public class BygleController {
 						RDFNode facetProperty = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "facetProperty")).next();
 						RDFNode mainQuery = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainQuery")).next();
 
-						PropertyBean p = new PropertyBean();
-						p.setNsProperty(Misc.toNsResource(facetProperty.toString(), conf));
-						p.setProperty(facetProperty.toString());
+						PropertyBean p = Misc.generatePropertyBean(facetProperty.toString(), locale.getLanguage(), ontoBean, conf);
 
-						// finding the page link for every classes
+						// finding the facets for every classes
 						facets.put(p, builder.buildHtmlFacets(mainQuery.toString(), locale, conf, confBygle, ontoBean));
 
 					} catch (Exception e) {

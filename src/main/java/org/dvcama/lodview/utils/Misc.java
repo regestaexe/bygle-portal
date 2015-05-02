@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
-public class Misc { 
+public class Misc {
 
 	public static String toNsResource(String iri, ConfigurationBean conf) {
 		if (iri != null && !iri.equals("")) {
@@ -131,6 +131,18 @@ public class Misc {
 		value = value.replaceAll("</?\\w[^>]*>", "");
 
 		return value;
+	}
+
+	public static PropertyBean generatePropertyBean(String IRI, String locale, OntologyBean ontoBean, ConfigurationBean conf) {
+		PropertyBean p = new PropertyBean();
+		p.setNsProperty(Misc.toNsResource(IRI, conf));
+		p.setProperty(IRI);
+		if (ontoBean != null) {
+			p.setLabel(ontoBean.getEscapedValue("label", locale, IRI));
+			p.setComment(ontoBean.getEscapedValue("comment", locale, IRI));
+		}
+		p.setPropertyUrl(Misc.toBrowsableUrl(IRI, conf));
+		return p;
 	}
 
 }

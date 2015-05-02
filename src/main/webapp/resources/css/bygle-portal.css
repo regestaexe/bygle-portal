@@ -18,6 +18,15 @@ div#bygmap {
 	width: 100%;
 }
 
+.toNobreakLine, div#directs.bygportal .value>div:not(.value).toNobreakLine{
+	display: inline;
+	white-space: nowrap;
+	padding-right:14px
+}
+.toNobreakLine, div#directs.bygportal .value>div:not(.value).toNobreakLine span{
+	font-weight: 300;
+	color:#ccc
+}
 /* map cluster */
 .marker-cluster-small {
 	background-color: rgba(181, 226, 140, 0.6);
