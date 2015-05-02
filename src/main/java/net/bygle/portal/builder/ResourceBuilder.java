@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import net.bygle.portal.conf.ConfigurationBean;
 
@@ -65,6 +66,30 @@ public class ResourceBuilder {
 			e.printStackTrace();
 		}
 		return triples;
+
+	}
+
+	public TreeMap<String, Integer> buildHtmlFacets(String query, Locale locale, org.dvcama.lodview.conf.ConfigurationBean conf, ConfigurationBean confBygle, OntologyBean ontoBean) {
+		String preferredLanguage = conf.getPreferredLanguage();
+		if (preferredLanguage.equals("auto")) {
+			preferredLanguage = locale.getLanguage();
+		}
+		SPARQLEndPoint se = new SPARQLEndPoint(conf, ontoBean, locale.getLanguage());
+		List<TripleBean> triples = new ArrayList<TripleBean>();
+
+		List<String> sparqlQueries = new ArrayList<String>();
+		sparqlQueries.add(query);
+		try {
+			// TODO: manage preferredLanguage
+			triples.addAll(se.doQuery(null, null, -1, sparqlQueries, null, "http://bygle.net/o/portal#count"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		TreeMap<String, Integer> result = new TreeMap<String, Integer>();
+		for (TripleBean triple : triples) {
+			result.put(triple.getProperty().getProperty(), Integer.parseInt(triple.getValue()));
+		}
+		return result;
 
 	}
 

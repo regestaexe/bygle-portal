@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -99,6 +101,7 @@ public class BygleController {
 			if (confBygle.getMainIRIs().contains(IRI)) {
 
 				Model m = confBygle.getConfModel();
+				net.bygle.portal.builder.ResourceBuilder builder = new net.bygle.portal.builder.ResourceBuilder(messageSource);
 
 				// loading search boxes
 				NodeIterator iter = m.listObjectsOfProperty(m.createResource(IRI), m.createProperty(m.getNsPrefixURI("conf"), "searchBox"));
@@ -106,8 +109,11 @@ public class BygleController {
 				LinkedHashMap<PropertyBean, List<TripleBean>> result = new LinkedHashMap<PropertyBean, List<TripleBean>>();
 				LinkedHashMap<PropertyBean, TripleBean> resultCount = new LinkedHashMap<PropertyBean, TripleBean>();
 
+				LinkedHashMap<PropertyBean, TreeMap<String, Integer>> facets = new LinkedHashMap<PropertyBean, TreeMap<String, Integer>>();
+
 				List<String> queries = new ArrayList<String>();
 
+				/* resources */
 				while (iter.hasNext()) {
 					try {
 
@@ -133,18 +139,41 @@ public class BygleController {
 
 							}
 						}
-						result.put(p, new net.bygle.portal.builder.ResourceBuilder(messageSource).buildHtmlMainClassSearch(mainQuery.toString(), rdfclass, -1, locale, conf, confBygle, ontoBean));
-						resultCount.put(p, new net.bygle.portal.builder.ResourceBuilder(messageSource).buildHtmlMainClassCount(mainCountQuery.toString(), rdfclass, locale, conf, confBygle, ontoBean).get(0));
-						
-						
+
+						result.put(p, builder.buildHtmlMainClassSearch(mainQuery.toString(), rdfclass, -1, locale, conf, confBygle, ontoBean));
+						resultCount.put(p, builder.buildHtmlMainClassCount(mainCountQuery.toString(), rdfclass, locale, conf, confBygle, ontoBean).get(0));
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 
 				}
-
 				model.addAttribute("result", result);
 				model.addAttribute("resultCount", resultCount);
+
+				/* facets */
+				iter = m.listObjectsOfProperty(m.createResource(IRI), m.createProperty(m.getNsPrefixURI("conf"), "facet"));
+				while (iter.hasNext()) {
+					try {
+
+						RDFNode node = iter.next();
+						RDFNode facetProperty = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "facetProperty")).next();
+						RDFNode mainQuery = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainQuery")).next();
+
+						PropertyBean p = new PropertyBean();
+						p.setNsProperty(Misc.toNsResource(facetProperty.toString(), conf));
+						p.setProperty(facetProperty.toString());
+
+						// finding the page link for every classes
+						facets.put(p, builder.buildHtmlFacets(mainQuery.toString(), locale, conf, confBygle, ontoBean));
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+				model.addAttribute("facets", facets);
+
 				return "bygle-resource";
 			} else {
 				return "resource";

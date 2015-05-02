@@ -72,8 +72,10 @@
  
 		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/organo> ;
 						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
-						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] 
-		
+						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] ;
+					 
+		conf:facet		[conf:facetProperty <http://dati.camera.it/ocd/rif_leg> ;
+						 conf:mainQuery """select ?p (count(distinct ?s) AS ?o) {?s <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/deputato>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?p} """]
 		.
 
 		## another IRI/page
