@@ -108,9 +108,9 @@
 							</c:choose></a>
 					</label>
 					<div class="c4 value isOpened">
-						<c:forEach items='${facets.get(prop)}' var="pair">
+						<c:forEach items='${facets.get(prop)}' var="facet">
 							<div class="toNobreakLine">
-								<a href="#">${pair.getKey()} <span>${pair.getValue() }</span></a>
+								<a href="?${facet.getAlias()}=${facet.getValue()}">${facet.getLabel()} <span>${facet.getCount() }</span></a>
 							</div>
 						</c:forEach>
 					</div>
