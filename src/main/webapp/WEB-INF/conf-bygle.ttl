@@ -58,12 +58,16 @@
 		conf:mainIRIs	<http://dati.camera.it/ocd/Organization.rdf/cd> , <http://dati.camera.it/ocd/deputato> , <http://dati.camera.it/ocd/organo> , <http://dati.camera.it/ocd/atto> ;
 		
 		conf:defaultSearchBox 	[conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>. 
-									${FILTER:leg ?s <http://dati.camera.it/ocd/rif_leg> ?leg . ?leg <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}
+									${FILTER:leg}
 									} order by asc(?o) LIMIT 10 """;
 									
 						 		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>. 
-						 			${FILTER:leg ?s <http://dati.camera.it/ocd/rif_leg> ?leg . ?leg <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}
+						 			${FILTER:leg}
 						 			} """] ;
+		
+		conf:queryFilters [conf:filterAlias "leg"; conf:filterExpression "{?s <http://dati.camera.it/ocd/rif_leg> ?leg . ?leg <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
+	
+		conf:queryFilters [conf:filterAlias "iniziativa"; conf:filterExpression "{?s <http://dati.camera.it/ocd/iniziativa> ${FILTERVALUE}}"]
 		.
 
 
@@ -79,25 +83,26 @@
 		conf:facet		[conf:alias	"leg" ; 
 						 conf:facetProperty <http://dati.camera.it/ocd/rif_leg> ;
 						 conf:mainQuery """select ?s (count(distinct ?p) AS ?o) {
-									 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/deputato>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
-									 	UNION
-									 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/atto>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
-										UNION
-									 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/organo>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
-									 	} group by ?s ?leg order by ?leg"""]
+							 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/deputato>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
+							 	UNION
+							 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/atto>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
+								UNION
+							 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/organo>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
+							 	${FILTER:leg}
+							 	} group by ?s ?leg order by ?leg"""]
 		.
 
 		## another IRI/page
  <http://dati.camera.it/ocd/atto> 
 
 		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/atto> ;
-						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>
-						  ${FILTER:iniziativa ; <http://dati.camera.it/ocd/iniziativa> ${FILTERVALUE}}
-						  ${FILTER:leg ?s <http://dati.camera.it/ocd/rif_leg> ?leg . ?leg <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}
+						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}> .
+						  ${FILTER:iniziativa}
+						  ${FILTER:leg}
 						 } order by asc(?o) LIMIT 10 """;
-						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>
-						  ${FILTER:iniziativa ; <http://dati.camera.it/ocd/iniziativa> ${FILTERVALUE}}
-						  ${FILTER:leg ?s <http://dati.camera.it/ocd/rif_leg> ?leg . ?leg <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}
+						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}> .
+						  ${FILTER:iniziativa}
+						  ${FILTER:leg}
 						  } """] ;
 						 
 		conf:facet		[conf:alias	"leg"; conf:facetProperty <http://dati.camera.it/ocd/rif_leg> ;

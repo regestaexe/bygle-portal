@@ -3,7 +3,9 @@ package net.bygle.portal.conf;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.jena.riot.RDFDataMgr;
@@ -16,6 +18,7 @@ public class ConfigurationBean extends org.dvcama.lodview.conf.ConfigurationBean
 
 	List<String> mainIRIs = null;
 	Random rand = new Random();
+	Map<String, String> filters = new HashMap<String, String>();
 
 	public ConfigurationBean() throws IOException, Exception {
 
@@ -38,6 +41,24 @@ public class ConfigurationBean extends org.dvcama.lodview.conf.ConfigurationBean
 		confModel = RDFDataMgr.loadModel(configFile.getAbsolutePath());
 
 		mainIRIs = getMultiConfValue("mainIRIs");
+		generateFilters();
+	}
+
+	private void generateFilters() {
+
+		NodeIterator defaultIter = confModel.listObjectsOfProperty(confModel.createProperty(confModel.getNsPrefixURI("conf"), "queryFilters"));
+
+		while (defaultIter.hasNext()) {
+			try {
+				RDFNode node = defaultIter.next();
+
+				NodeIterator alias = confModel.listObjectsOfProperty(node.asResource(), confModel.createProperty(confModel.getNsPrefixURI("conf"), "filterAlias"));
+				NodeIterator filterExpression = confModel.listObjectsOfProperty(node.asResource(), confModel.createProperty(confModel.getNsPrefixURI("conf"), "filterExpression"));
+				filters.put(alias.next().toString(), filterExpression.next().toString());
+
+			} catch (Exception e) {
+			}
+		}
 
 	}
 
@@ -76,6 +97,10 @@ public class ConfigurationBean extends org.dvcama.lodview.conf.ConfigurationBean
 
 	public List<String> getMainIRIs() {
 		return mainIRIs;
+	}
+
+	public Map<String, String> getFilters() {
+		return filters;
 	}
 
 	public void setMainIRIs(List<String> mainIRIs) {

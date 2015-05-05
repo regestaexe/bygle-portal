@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.bygle.portal.bean.FacetBean;
 import net.bygle.portal.conf.ConfigurationBean;
+import net.bygle.portal.utils.Misc;
 
 import org.dvcama.lodview.bean.OntologyBean;
 import org.dvcama.lodview.bean.PropertyBean;
@@ -21,7 +21,6 @@ import org.dvcama.lodview.bean.ResultBean;
 import org.dvcama.lodview.bean.TripleBean;
 import org.dvcama.lodview.builder.ResourceBuilder;
 import org.dvcama.lodview.controllers.ErrorController;
-import org.dvcama.lodview.utils.Misc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -157,8 +156,8 @@ public class BygleController {
 
 							}
 
-							result.put(p, builder.buildHtmlMainClassSearch(net.bygle.portal.utils.Misc.parseFilters(filters, mainQuery), rdfclass, -1, locale, conf, confBygle, ontoBean));
-							resultCount.put(p, builder.buildHtmlMainClassCount(net.bygle.portal.utils.Misc.parseFilters(filters, mainCountQuery), rdfclass, locale, conf, confBygle, ontoBean).get(0));
+							result.put(p, builder.buildHtmlMainClassSearch(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery), rdfclass, -1, locale, conf, confBygle, ontoBean));
+							resultCount.put(p, builder.buildHtmlMainClassCount(Misc.parseFilters(filters, confBygle.getFilters(), mainCountQuery), rdfclass, locale, conf, confBygle, ontoBean).get(0));
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -189,7 +188,7 @@ public class BygleController {
 							PropertyBean p = Misc.generatePropertyBean(facetProperty.toString(), locale.getLanguage(), ontoBean, conf);
 							// finding the facets for every classes
 							// TODO: merging facets
-							facets.put(p, builder.buildHtmlFacets(mainQuery.toString(), alias.toString(), locale, conf, confBygle, ontoBean));
+							facets.put(p, builder.buildHtmlFacets(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery.toString()), alias.toString(), locale, conf, confBygle, ontoBean));
 
 						} catch (Exception e) {
 							e.printStackTrace();
