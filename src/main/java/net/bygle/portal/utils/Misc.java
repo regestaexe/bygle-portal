@@ -2,7 +2,7 @@ package net.bygle.portal.utils;
 
 import java.util.Map;
 
-public class Misc {
+public class Misc extends org.dvcama.lodview.utils.Misc {
 
 	public static String parseFilters(Map<String, String[]> filters, String query) {
 

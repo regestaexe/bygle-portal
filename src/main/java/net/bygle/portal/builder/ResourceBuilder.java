@@ -2,30 +2,20 @@ package net.bygle.portal.builder;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import net.bygle.portal.bean.FacetBean;
 import net.bygle.portal.conf.ConfigurationBean;
 
-import org.apache.jena.riot.Lang;
 import org.dvcama.lodview.bean.OntologyBean;
-import org.dvcama.lodview.bean.ResultBean;
 import org.dvcama.lodview.bean.TripleBean;
 import org.dvcama.lodview.endpoint.SPARQLEndPoint;
 import org.springframework.context.MessageSource;
 
-import com.hp.hpl.jena.rdf.model.Model;
-
-public class ResourceBuilder {
-
-	private MessageSource messageSource;
-
-	public ResourceBuilder() {
-	}
-
+public class ResourceBuilder extends org.dvcama.lodview.builder.ResourceBuilder {
+	
+	
 	public ResourceBuilder(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
@@ -109,35 +99,6 @@ public class ResourceBuilder {
 		}
 		return result;
 
-	}
-
-	public ResultBean buildHtmlResource(String IRI, Locale locale, ConfigurationBean conf, OntologyBean ontoBean) throws Exception {
-		return buildHtmlResource(IRI, locale, conf, ontoBean, false);
-	}
-
-	public ResultBean buildHtmlResource(String IRI, Locale locale, ConfigurationBean conf, OntologyBean ontoBean, boolean localMode) throws Exception {
-		ResultBean result = new ResultBean();
-
-		return result;
-	}
-
-	public String buildRDFResource(String IRI, String sparql, Lang lang, ConfigurationBean conf) throws Exception {
-		String result = "empty content";
-
-		return result;
-	}
-
-	public String buildRDFResource(String IRI, Model m, Lang lang, ConfigurationBean conf) throws Exception {
-		String result = "empty content";
-
-		return result;
-	}
-
-	public ResultBean buildPartialHtmlResource(String IRI, String[] abouts, Locale locale, ConfigurationBean conf, OntologyBean ontoBean, List<String> filterProperties) throws Exception {
-
-		ResultBean result = new ResultBean();
-
-		return result;
 	}
 
 }
