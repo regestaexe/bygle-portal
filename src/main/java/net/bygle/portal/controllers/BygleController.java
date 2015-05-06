@@ -2,6 +2,7 @@ package net.bygle.portal.controllers;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -78,6 +79,10 @@ public class BygleController {
 			IRI = forceIRI;
 		}
 		Map<String, String[]> filters = req.getParameterMap();
+
+		Map<String, String> filtersAppender = new HashMap<String, String>();
+		filtersAppender.put("main", Misc.urlMinusFilter(filters, confBygle.getFilters(), ""));
+
 		System.out.println("####################################################################");
 		System.out.println("#################  looking for " + IRI + " in byg.portal ################# ");
 
@@ -186,9 +191,11 @@ public class BygleController {
 							RDFNode alias = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "alias")).next();
 
 							PropertyBean p = Misc.generatePropertyBean(facetProperty.toString(), locale.getLanguage(), ontoBean, conf);
+
 							// finding the facets for every classes
 							// TODO: merging facets
 							facets.put(p, builder.buildHtmlFacets(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery.toString()), alias.toString(), locale, conf, confBygle, ontoBean));
+							filtersAppender.put(alias.toString(), Misc.urlMinusFilter(filters, confBygle.getFilters(), alias.toString()));
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -196,6 +203,7 @@ public class BygleController {
 
 					}
 					model.addAttribute("facets", facets);
+					model.addAttribute("filtersAppender", filtersAppender);
 				}
 				/*************** ****** ***************/
 				/*************** ****** ***************/
