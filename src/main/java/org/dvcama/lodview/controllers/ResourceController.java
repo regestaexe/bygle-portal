@@ -177,7 +177,7 @@ public class ResourceController {
 						r.setExposeModelAttributes(false);
 						r.setContentType("text/html");
 						r.setHttp10Compatible(false);
-						r.setUrl(req.getRequestURL() + redirectUrl);
+						r.setUrl(req.getRequestURL() + redirectUrl + (req.getQueryString() != null ? "?" + req.getQueryString() : ""));
 
 						return r;
 					} else {
