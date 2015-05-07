@@ -161,8 +161,8 @@ public class BygleController {
 
 							}
 
-							result.put(p, builder.buildHtmlMainClassSearch(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery), rdfclass, -1, locale, conf, confBygle, ontoBean));
-							resultCount.put(p, builder.buildHtmlMainClassCount(Misc.parseFilters(filters, confBygle.getFilters(), mainCountQuery), rdfclass, locale, conf, confBygle, ontoBean).get(0));
+							result.put(p, builder.buildHtmlMainClassSearch(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery, locale.getLanguage()), rdfclass, -1, locale, conf, confBygle, ontoBean));
+							resultCount.put(p, builder.buildHtmlMainClassCount(Misc.parseFilters(filters, confBygle.getFilters(), mainCountQuery, locale.getLanguage()), rdfclass, locale, conf, confBygle, ontoBean).get(0));
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -189,12 +189,13 @@ public class BygleController {
 							RDFNode facetProperty = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "facetProperty")).next();
 							RDFNode mainQuery = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainQuery")).next();
 							RDFNode alias = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "alias")).next();
-
 							PropertyBean p = Misc.generatePropertyBean(facetProperty.toString(), locale.getLanguage(), ontoBean, conf);
 
 							// finding the facets for every classes
 							// TODO: merging facets
-							facets.put(p, builder.buildHtmlFacets(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery.toString()), alias.toString(), locale, conf, confBygle, ontoBean));
+							System.out.println(" "+alias.toString());
+							
+							facets.put(p, builder.buildHtmlFacets(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery.toString(), locale.getLanguage()), alias.toString(), locale, conf, confBygle, ontoBean));
 							filtersAppender.put(alias.toString(), Misc.urlMinusFilter(filters, confBygle.getFilters(), alias.toString()));
 
 						} catch (Exception e) {

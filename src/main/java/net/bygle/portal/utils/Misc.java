@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Misc extends org.dvcama.lodview.utils.Misc {
 
-	public static String parseFilters(Map<String, String[]> filtersRequest, Map<String, String> filters, String query) {
+	public static String parseFilters(Map<String, String[]> filtersRequest, Map<String, String> filters, String query, String locale) {
 
 		for (String filter : filters.keySet()) {
 			try {
@@ -15,6 +15,7 @@ public class Misc extends org.dvcama.lodview.utils.Misc {
 			}
 		}
 
+		query = query.replaceAll("\\$\\{LOCALE\\}", locale);
 		query = query.replaceAll("\\$\\{FILTER:[^}]+\\}", "");
 		return query;
 	}
@@ -22,7 +23,6 @@ public class Misc extends org.dvcama.lodview.utils.Misc {
 	public static String urlMinusFilter(Map<String, String[]> filtersRequest, Map<String, String> filters, String thisFilter) {
 
 		String result = "";
-
 		for (String filter : filtersRequest.keySet()) {
 			if (filter.equals(thisFilter)) {
 				continue;

@@ -55,87 +55,64 @@
 <> a conf:Configuration;
 		
 		## IRIs that will be used as "pages" of the portal
-		conf:mainIRIs	<http://dati.camera.it/ocd/Organization.rdf/cd> , <http://dati.camera.it/ocd/deputato> , <http://dati.camera.it/ocd/organo> , <http://dati.camera.it/ocd/atto> ;
+		conf:mainIRIs	<http://dbpedia.org/resource/DBpedia>  ;
 		
 		conf:defaultSearchBox 	[conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>. 
-									${FILTER:leg:1}
+									${FILTER:ct:1}
+									${FILTER:ma:1}
+								 		FILTER langMatches(lang(?o), "${LOCALE}" )
 									} order by asc(?o) LIMIT 10 """;
-									
-						 		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>. 
-						 			${FILTER:leg:1}
+						 			conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}> . 
+						 			${FILTER:ma:1}
+						 			${FILTER:ct:1} 
 						 			} """] ;
 		
-		conf:queryFilters [conf:filterAlias "leg:1"; conf:filterExpression "{?s <http://dati.camera.it/ocd/rif_leg> ?leg . ?leg <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
-		
-		conf:queryFilters [conf:filterAlias "leg:2"; conf:filterExpression "{?leg <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
+		conf:queryFilters [conf:filterAlias "ct:1"; conf:filterExpression "{?s <http://dbpedia.org/ontology/country> ?ct . ?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
+		conf:queryFilters [conf:filterAlias "ct:2"; conf:filterExpression "{?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
+		conf:queryFilters [conf:filterAlias "ct:3"; conf:filterExpression "{OPTIONAL{?p <http://dbpedia.org/ontology/country> ?ct . ?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}}"];
 	
-		conf:queryFilters [conf:filterAlias "iniziativa:1"; conf:filterExpression "{?s <http://dati.camera.it/ocd/iniziativa> ${FILTERVALUE}}"];
-		conf:queryFilters [conf:filterAlias "iniziativa:2"; conf:filterExpression "{?p <http://dati.camera.it/ocd/iniziativa> ${FILTERVALUE}}"]
+		conf:queryFilters [conf:filterAlias "ma:1"; conf:filterExpression "{?s <http://dbpedia.org/ontology/mayor> ?ma . ?ma <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
+		conf:queryFilters [conf:filterAlias "ma:2"; conf:filterExpression "{?ma <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
+		conf:queryFilters [conf:filterAlias "ma:3"; conf:filterExpression "{OPTIONAL{?p <http://dbpedia.org/ontology/mayor> ?ma . ?ma <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}}"]
+	
 		.
 
 
 		## for each IRI/page a specific configuration 
-<http://dati.camera.it/ocd/Organization.rdf/cd>
+<http://dbpedia.org/resource/DBpedia>
 
-		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/deputato> ];
+		conf:searchBox	[conf:mainClasses	 <http://dbpedia.org/class/yago/HolyCities> ];
 		
-		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/atto> ];
- 
-		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/organo> ];
+		conf:searchBox	[conf:mainClasses	 <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames> ];
+  
 					 
-		conf:facet		[conf:alias	"leg" ; 
-						 conf:facetProperty <http://dati.camera.it/ocd/rif_leg> ;
+		conf:facet		[conf:alias	"ct" ; 
+						 conf:facetProperty <http://dbpedia.org/ontology/country> ;
 						 conf:mainQuery """select ?s (count(distinct ?p) AS ?o) {
-							 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/deputato>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
+							 		{?p <http://dbpedia.org/ontology/country> ?ct ; 
+							 			a <http://dbpedia.org/class/yago/HolyCities>. 
+							 		?ct <http://www.w3.org/2000/01/rdf-schema#label> ?s}
 							 	UNION
-							 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/atto>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
-								UNION
-							 		{?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/organo>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s}
-							 	${FILTER:leg:2}
-							 	} group by ?s ?leg order by ?leg"""]
+							 		{?p <http://dbpedia.org/ontology/country> ?ct ; 
+							 			a <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames>. 
+							 			?ct <http://www.w3.org/2000/01/rdf-schema#label> ?s}
+							  		${FILTER:ct:2} 
+							  		${FILTER:ma:3}
+								  FILTER langMatches(lang(?s), "${LOCALE}" ) 
+							 	} group by ?s ?ct order by ?ct"""];
+							 						 
+		conf:facet		[conf:alias	"ma" ; 
+						 conf:facetProperty <http://dbpedia.org/ontology/mayor> ;
+						 conf:mainQuery """select ?s (count(distinct ?p) AS ?o) {
+							 		{?p <http://dbpedia.org/ontology/mayor> ?ma ; a <http://dbpedia.org/class/yago/HolyCities>. ?ma <http://www.w3.org/2000/01/rdf-schema#label> ?s}
+							 	UNION
+							 		{?p <http://dbpedia.org/ontology/mayor> ?ma ; a <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames>. ?ma <http://www.w3.org/2000/01/rdf-schema#label> ?s}
+								  	${FILTER:ct:3} 
+							  		${FILTER:ma:2}
+								  FILTER langMatches(lang(?s), "${LOCALE}" ) 
+							 	} group by ?s ?ma order by ?ma"""]
 		.
-
-		## another IRI/page
- <http://dati.camera.it/ocd/atto> 
-
-		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/atto> ;
-						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; <http://dati.camera.it/ocd/rif_leg> ?leg; a <${CLASS}> .
-						  ${FILTER:iniziativa:1}
-						  ${FILTER:leg:1}
-						 } order by asc(?o) LIMIT 10 """;
-						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}> ; <http://dati.camera.it/ocd/rif_leg> ?leg.
-						  ${FILTER:iniziativa:1}
-						  ${FILTER:leg:1}
-						  } """] ;
-						 
-		conf:facet		[conf:alias	"leg"; conf:facetProperty <http://dati.camera.it/ocd/rif_leg> ;
-						 conf:mainQuery """select ?s (count(distinct ?p) AS ?o) { ${FILTER:iniziativa:2}	${FILTER:leg:2} ?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/atto>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s} group by ?s ?leg order by ?leg"""];
-						 		
-		conf:facet		[conf:alias	"iniziativa" ; conf:facetProperty <http://dati.camera.it/ocd/iniziativa> ;
-						 conf:mainQuery """select ?s (count(distinct ?p) AS ?o) { ${FILTER:iniziativa:2}	${FILTER:leg:2} ?p <http://dati.camera.it/ocd/iniziativa> ?s; <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/atto> } group by ?o ?s order by desc(?o) """]			
-		.		
-
-
-		## another IRI/page
-<http://dati.camera.it/ocd/deputato> 
-
-		conf:mainClasses	<http://dati.camera.it/ocd/deputato>;
-		conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
-		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """;
-		conf:facet		[conf:facetProperty <http://dati.camera.it/ocd/rif_leg> ;
-						 conf:mainQuery """select ?s (count(distinct ?p) AS ?o) {?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/atto>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s} group by ?s ?leg order by ?leg"""]		
-		.		
-
-		## another IRI/page
-<http://dati.camera.it/ocd/organo> 
-
-		conf:searchBox	[conf:mainClasses	 <http://dati.camera.it/ocd/deputato> ;
-						 conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>} order by asc(?o) LIMIT 10 """;
-						 conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}>} """] ;
-						 
-		conf:facet		[conf:facetProperty <http://dati.camera.it/ocd/rif_leg> ;
-						 conf:mainQuery """select ?s (count(distinct ?p) AS ?o) {?p <http://dati.camera.it/ocd/rif_leg> ?leg; a <http://dati.camera.it/ocd/atto>. ?leg <http://www.w3.org/2000/01/rdf-schema#label> ?s} group by ?s ?leg order by ?leg"""]		
-		.			
+ 
 
 
  
