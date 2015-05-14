@@ -57,6 +57,8 @@
 		## IRIs that will be used as "pages" of the portal
 		conf:mainIRIs	<http://dbpedia.org/resource/DBpedia>  ;
 		
+		
+		## default configuration, will be overrided by more specific page configurations 
 		conf:defaultSearchBox 	[conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>. 
 									${FILTER:ct:1}
 									${FILTER:ma:1}
@@ -66,7 +68,7 @@
 						 			${FILTER:ma:1}
 						 			${FILTER:ct:1} 
 						 			} """] ;
-		
+
 		conf:queryFilters [conf:filterAlias "ct:1"; conf:filterExpression "{?s <http://dbpedia.org/ontology/country> ?ct . ?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
 		conf:queryFilters [conf:filterAlias "ct:2"; conf:filterExpression "{?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
 		conf:queryFilters [conf:filterAlias "ct:3"; conf:filterExpression "{OPTIONAL{?p <http://dbpedia.org/ontology/country> ?ct . ?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}}"];
@@ -85,6 +87,27 @@
 		
 		conf:searchBox	[conf:mainClasses	 <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames> ];
   
+  		conf:placeFacet	 [conf:alias	"place" ; 
+					 
+						 conf:mainQuery """select ?s ?lat ?long ?label {
+							 		{?s a <http://dbpedia.org/class/yago/HolyCities>. 
+							 			?s <http://www.w3.org/2000/01/rdf-schema#label> ?label;
+							 			<http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat;
+							 			<http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long 
+							 		 }
+							 	UNION 
+							 		{?s  a <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames>. 
+							 			
+							 			?s <http://www.w3.org/2000/01/rdf-schema#label> ?label;
+							 			<http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat;
+							 			<http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long 
+							 		}
+							  		
+							  		${FILTER:ct:2} 
+							  		${FILTER:ma:3}
+							  		
+								  FILTER langMatches(lang(?label), "${LOCALE}" ) 
+							 	}} """];
 					 
 		conf:facet		[conf:alias	"ct" ; 
 						 conf:facetProperty <http://dbpedia.org/ontology/country> ;
