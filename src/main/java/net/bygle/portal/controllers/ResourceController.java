@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 @Controller
 @RequestMapping(value = "**/html")
-public class BygleController {
+public class ResourceController {
 	@Autowired
 	private MessageSource messageSource;
 
