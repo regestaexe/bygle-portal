@@ -2,7 +2,11 @@ package net.bygle.portal.utils;
 
 import java.util.Map;
 
-public class Misc {
+import org.dvcama.lodview.bean.OntologyBean;
+import org.dvcama.lodview.bean.PropertyBean;
+import org.dvcama.lodview.conf.ConfigurationBean;
+
+public class Misc extends org.dvcama.lodview.utils.Misc {
 
 	public static String parseFilters(Map<String, String[]> filters, String query) {
 
@@ -18,5 +22,17 @@ public class Misc {
 
 		query = query.replaceAll("\\$\\{FILTER:[^$]*\\$\\{FILTERVALUE\\}[^}]*\\}", "");
 		return query;
+	}
+
+	public static PropertyBean generatePropertyBean(String IRI, String locale, OntologyBean ontoBean, ConfigurationBean conf) {
+		PropertyBean p = new PropertyBean();
+		p.setNsProperty(Misc.toNsResource(IRI, conf));
+		p.setProperty(IRI);
+		if (ontoBean != null) {
+			p.setLabel(ontoBean.getEscapedValue("label", locale, IRI));
+			p.setComment(ontoBean.getEscapedValue("comment", locale, IRI));
+		}
+		p.setPropertyUrl(Misc.toBrowsableUrl(IRI, conf));
+		return p;
 	}
 }

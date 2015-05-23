@@ -2,6 +2,7 @@ package net.bygle.portal.builder;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +20,7 @@ import org.springframework.context.MessageSource;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
-public class ResourceBuilder {
+public class ResourceBuilder extends org.dvcama.lodview.builder.ResourceBuilder {
 
 	private MessageSource messageSource;
 
@@ -111,31 +112,10 @@ public class ResourceBuilder {
 
 	}
 
-	public ResultBean buildHtmlResource(String IRI, Locale locale, ConfigurationBean conf, OntologyBean ontoBean) throws Exception {
-		return buildHtmlResource(IRI, locale, conf, ontoBean, false);
-	}
+	public Map<Object, Object> buildPedegreeData(String iRI, Model m, org.dvcama.lodview.conf.ConfigurationBean conf) {
+		Map<Object, Object> result = new HashMap<Object, Object>();
 
-	public ResultBean buildHtmlResource(String IRI, Locale locale, ConfigurationBean conf, OntologyBean ontoBean, boolean localMode) throws Exception {
-		ResultBean result = new ResultBean();
-
-		return result;
-	}
-
-	public String buildRDFResource(String IRI, String sparql, Lang lang, ConfigurationBean conf) throws Exception {
-		String result = "empty content";
-
-		return result;
-	}
-
-	public String buildRDFResource(String IRI, Model m, Lang lang, ConfigurationBean conf) throws Exception {
-		String result = "empty content";
-
-		return result;
-	}
-
-	public ResultBean buildPartialHtmlResource(String IRI, String[] abouts, Locale locale, ConfigurationBean conf, OntologyBean ontoBean, List<String> filterProperties) throws Exception {
-
-		ResultBean result = new ResultBean();
+		result.put("prova", "prova");
 
 		return result;
 	}

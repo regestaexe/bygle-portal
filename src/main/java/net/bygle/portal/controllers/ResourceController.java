@@ -13,14 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.bygle.portal.bean.FacetBean;
 import net.bygle.portal.conf.ConfigurationBean;
+import net.bygle.portal.utils.Misc;
 
 import org.dvcama.lodview.bean.OntologyBean;
 import org.dvcama.lodview.bean.PropertyBean;
 import org.dvcama.lodview.bean.ResultBean;
 import org.dvcama.lodview.bean.TripleBean;
 import org.dvcama.lodview.builder.ResourceBuilder;
-import org.dvcama.lodview.controllers.ErrorController;
-import org.dvcama.lodview.utils.Misc;
+import org.dvcama.lodview.controllers.ErrorController; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
