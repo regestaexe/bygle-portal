@@ -11,9 +11,7 @@ import java.util.Map;
 import net.bygle.portal.bean.FacetBean;
 import net.bygle.portal.conf.ConfigurationBean;
 
-import org.apache.jena.riot.Lang;
 import org.dvcama.lodview.bean.OntologyBean;
-import org.dvcama.lodview.bean.ResultBean;
 import org.dvcama.lodview.bean.TripleBean;
 import org.dvcama.lodview.endpoint.SPARQLEndPoint;
 import org.springframework.context.MessageSource;

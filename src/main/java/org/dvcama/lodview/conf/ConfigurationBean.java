@@ -21,14 +21,14 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class ConfigurationBean implements ServletContextAware, Cloneable {
 
-	private Model confModel = null;
-	private ServletContext context;
+	protected Model confModel = null;
+	protected ServletContext context;
 
-	private String confFile, homeUrl, license, httpRedirectSuffix, EndPointUrl, IRInamespace, contentEncoding, staticResourceURL, preferredLanguage, publicUrlPrefix = null, publicUrlSuffix = "", authUsername = null, authPassword = null, defaultInverseBehaviour = "collapse";
+	protected String confFile, homeUrl, license, httpRedirectSuffix, EndPointUrl, IRInamespace, contentEncoding, staticResourceURL, preferredLanguage, publicUrlPrefix = null, publicUrlSuffix = "", authUsername = null, authPassword = null, defaultInverseBehaviour = "collapse";
 
-	private List<String> defaultQueries = null, defaultRawDataQueries = null, defaultInversesQueries = null, defaultInversesTest = null, defaultInversesCountQueries = null, typeProperties = null, imageProperties = null, linkingProperties = null, titleProperties = null, descriptionProperties = null, longitudeProperties = null, latitudeProperties = null;
-	private List<String> colorPair = null, skipDomains = null, mainOntologiesPrefixes = null;
-	private Map<String, String> colorPairMatcher = null;
+	protected List<String> defaultQueries = null, defaultRawDataQueries = null, defaultInversesQueries = null, defaultInversesTest = null, defaultInversesCountQueries = null, typeProperties = null, imageProperties = null, linkingProperties = null, titleProperties = null, descriptionProperties = null, longitudeProperties = null, latitudeProperties = null;
+	protected List<String> colorPair = null, skipDomains = null, mainOntologiesPrefixes = null;
+	protected Map<String, String> colorPairMatcher = null;
 
 	Random rand = new Random();
 
@@ -93,7 +93,7 @@ public class ConfigurationBean implements ServletContextAware, Cloneable {
 		skipDomains = getMultiConfValue("skipDomains");
 	}
 
-	private Map<String, String> populateColorPairMatcher() {
+	protected Map<String, String> populateColorPairMatcher() {
 		Map<String, String> result = new HashMap<String, String>();
 		ResIterator iter = confModel.listSubjectsWithProperty(confModel.createProperty(confModel.getNsPrefixURI("conf"), "hasColorPair"));
 		while (iter.hasNext()) {
@@ -108,11 +108,11 @@ public class ConfigurationBean implements ServletContextAware, Cloneable {
 		return result;
 	}
 
-	private String getSingleConfValue(String prop) {
+	protected String getSingleConfValue(String prop) {
 		return getSingleConfValue(prop, null);
 	}
 
-	private String getSingleConfValue(String prop, String defaultValue) {
+	protected String getSingleConfValue(String prop, String defaultValue) {
 		NodeIterator iter = confModel.listObjectsOfProperty(confModel.createProperty(confModel.getNsPrefixURI("conf"), prop));
 		while (iter.hasNext()) {
 			RDFNode node = iter.next();
@@ -121,7 +121,7 @@ public class ConfigurationBean implements ServletContextAware, Cloneable {
 		return defaultValue;
 	}
 
-	private List<String> getMultiConfValue(String prop) {
+	protected List<String> getMultiConfValue(String prop) {
 		List<String> result = new ArrayList<String>();
 		NodeIterator iter = confModel.listObjectsOfProperty(confModel.createProperty(confModel.getNsPrefixURI("conf"), prop));
 		while (iter.hasNext()) {

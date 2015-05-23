@@ -25,7 +25,7 @@ import com.hp.hpl.jena.rdf.model.RDFWriter;
 
 public class ResourceBuilder {
 
-	private MessageSource messageSource;
+	protected MessageSource messageSource;
 
 	public ResourceBuilder() {
 	}

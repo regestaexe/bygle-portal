@@ -2,6 +2,7 @@ package net.bygle.portal.controllers;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -78,6 +79,10 @@ public class ResourceController {
 			IRI = forceIRI;
 		}
 		Map<String, String[]> filters = req.getParameterMap();
+
+		Map<String, String> filtersAppender = new HashMap<String, String>();
+		filtersAppender.put("main", Misc.urlMinusFilter(filters, confBygle.getFilters(), ""));
+
 		System.out.println("####################################################################");
 		System.out.println("#################  looking for " + IRI + " in byg.portal ################# ");
 
@@ -156,8 +161,8 @@ public class ResourceController {
 
 							}
 
-							result.put(p, builder.buildHtmlMainClassSearch(net.bygle.portal.utils.Misc.parseFilters(filters, mainQuery), rdfclass, -1, locale, conf, confBygle, ontoBean));
-							resultCount.put(p, builder.buildHtmlMainClassCount(net.bygle.portal.utils.Misc.parseFilters(filters, mainCountQuery), rdfclass, locale, conf, confBygle, ontoBean).get(0));
+							result.put(p, builder.buildHtmlMainClassSearch(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery, locale.getLanguage()), rdfclass, -1, locale, conf, confBygle, ontoBean));
+							resultCount.put(p, builder.buildHtmlMainClassCount(Misc.parseFilters(filters, confBygle.getFilters(), mainCountQuery, locale.getLanguage()), rdfclass, locale, conf, confBygle, ontoBean).get(0));
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -184,11 +189,14 @@ public class ResourceController {
 							RDFNode facetProperty = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "facetProperty")).next();
 							RDFNode mainQuery = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainQuery")).next();
 							RDFNode alias = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "alias")).next();
-
 							PropertyBean p = Misc.generatePropertyBean(facetProperty.toString(), locale.getLanguage(), ontoBean, conf);
+
 							// finding the facets for every classes
 							// TODO: merging facets
-							facets.put(p, builder.buildHtmlFacets(mainQuery.toString(), alias.toString(), locale, conf, confBygle, ontoBean));
+							System.out.println(" "+alias.toString());
+							
+							facets.put(p, builder.buildHtmlFacets(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery.toString(), locale.getLanguage()), alias.toString(), locale, conf, confBygle, ontoBean));
+							filtersAppender.put(alias.toString(), Misc.urlMinusFilter(filters, confBygle.getFilters(), alias.toString()));
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -196,6 +204,7 @@ public class ResourceController {
 
 					}
 					model.addAttribute("facets", facets);
+					model.addAttribute("filtersAppender", filtersAppender);
 				}
 				/*************** ****** ***************/
 				/*************** ****** ***************/

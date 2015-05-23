@@ -80,7 +80,7 @@
 							</c:choose></a>
 					</label>
 					<div class="c4 value isOpened">
-						<a href="${prop.getPropertyUrl()}" class="bygpaginator" data-property="${prop.getNsProperty()}">${resultCount.get(prop).getValue() } <sp:message code='label.resources' text='resources' /></a><span class="lloadingb" style="display: none"></span>
+						<a href="${prop.getPropertyUrl()}?${filtersAppender.get('main')}" class="bygpaginator" data-property="${prop.getNsProperty()}">${resultCount.get(prop).getValue() } <sp:message code='label.resources' text='resources' /></a><span class="lloadingb" style="display: none"></span>
 						<c:forEach items='${result.get(prop)}' var="iel">
 							<div class="toOneLine">
 								<a href="${Misc.toBrowsableUrl(iel.getIRI(), conf)}">${iel.getValue()}</a>
@@ -110,7 +110,7 @@
 					<div class="c4 value isOpened">
 						<c:forEach items='${facets.get(prop)}' var="facet">
 							<div class="toNobreakLine">
-								<a href="?${facet.getAlias()}=${facet.getValue()}">${facet.getLabel()} <span>${facet.getCount() }</span></a>
+								<a href="?${facet.getAlias()}=${facet.getValue()}${filtersAppender.get(facet.getAlias())}">${facet.getLabel()} <span>${facet.getCount() }</span></a>
 							</div>
 						</c:forEach>
 					</div>
