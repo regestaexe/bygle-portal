@@ -60,15 +60,14 @@
 		
 		## default configuration, will be overrided by more specific page configurations 
 		conf:defaultSearchBox 	[
-								conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>. 
+								conf:mainQuery """select distinct ?s {?s a <${CLASS}>. 
 										${FILTER:ct:1}
 										${FILTER:ma:1}
-								 		FILTER langMatches(lang(?o), "${LOCALE}" )
 										} order by asc(?o) LIMIT 10 """;
-						 		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}> . 
+										
+						 		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s  a <${CLASS}> . 
 							 			${FILTER:ma:1}
 							 			${FILTER:ct:1} 
-								 		FILTER langMatches(lang(?o), "${LOCALE}" )
 							 			} """] ;
 
 		conf:queryFilters [conf:filterAlias "ct:1"; conf:filterExpression "{?s <http://dbpedia.org/ontology/country> ?ct . ?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];

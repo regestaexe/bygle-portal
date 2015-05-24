@@ -163,7 +163,7 @@ public class BygleResourceController {
 
 							}
 
-							result.put(p, builder.buildHtmlMainClassSearch(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery, locale.getLanguage()), rdfclass, -1, locale, conf, confBygle, ontoBean));
+							result.put(p, builder.buildHtmlMainClassSearch(IRI,Misc.parseFilters(filters, confBygle.getFilters(), mainQuery, locale.getLanguage()), rdfclass, -1, locale, conf, confBygle, ontoBean));
 							resultCount.put(p, builder.buildHtmlMainClassCount(Misc.parseFilters(filters, confBygle.getFilters(), mainCountQuery, locale.getLanguage()), rdfclass, locale, conf, confBygle, ontoBean).get(0));
 
 						} catch (Exception e) {

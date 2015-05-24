@@ -272,7 +272,7 @@ public class ResourceBuilder {
 		return buildHtmlInverseResource(IRI, null, -1, locale, conf, ontoBean);
 	}
 
-	private ResultBean triplesToResult(String IRI, List<TripleBean> triples, Locale locale, ConfigurationBean conf, OntologyBean ontoBean) {
+	public ResultBean triplesToResult(String IRI, List<TripleBean> triples, Locale locale, ConfigurationBean conf, OntologyBean ontoBean) {
 		String preferredLanguage = conf.getPreferredLanguage();
 		if (preferredLanguage.equals("auto")) {
 			preferredLanguage = locale.getLanguage();

@@ -135,8 +135,8 @@ public class PaginatorController {
 									}
 
 								}
-
-								result.put(p, builder.buildHtmlMainClassSearch(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery, locale.getLanguage()), rdfclass, Integer.parseInt(offset), locale, conf, confBygle, ontoBean));
+ 
+								result.put(p, builder.buildHtmlMainClassSearch(IRI,Misc.parseFilters(filters, confBygle.getFilters(), mainQuery, locale.getLanguage()), rdfclass, Integer.parseInt(offset), locale, conf, confBygle, ontoBean));
 
 								TripleBean t = new TripleBean();
 								t.setValue(tot);
