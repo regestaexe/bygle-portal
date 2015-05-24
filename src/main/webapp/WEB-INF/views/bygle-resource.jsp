@@ -65,7 +65,7 @@
 		</header>
 
 		<aside class="empty"></aside>
-		<div id="directs" class="bygportal">
+		<div class="directs bygportal">
 			<div class="c1">
 				<h3>
 					<sp:message code='title.resources' text='resources' />
@@ -93,7 +93,7 @@
 		<div id="bygmapcnt">
 			<div id="bygmap"></div>
 		</div>
-		<div id="directs" class="bygportal">
+		<div class="directs bygportal">
 			<div class="c1">
 				<h3>
 					<sp:message code='title.facets' text='facets' />

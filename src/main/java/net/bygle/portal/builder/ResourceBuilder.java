@@ -72,7 +72,7 @@ public class ResourceBuilder extends org.dvcama.lodview.builder.ResourceBuilder 
 				a.setNsIRI(Misc.toNsResource(triple.getValue(), conf));
 				a.setUrl(Misc.toBrowsableUrl(triple.getValue(), conf));
 				triples.add(a);
-				System.out.println(a);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

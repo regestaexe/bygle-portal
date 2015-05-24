@@ -90,9 +90,8 @@
 				success : function(data) {
 
 					$.each(data, function(k1, v1) {
-						$.each(v1, function(k, v) {
-							// TODO: manage the links
-							var ele = $('<div class="toOneLine" style="display:none"><a href="/bygle-portal/resource/Amsterdam">' + v.value + '</a></div>');
+						$.each(v1, function(k, v) { 
+							var ele = $('<div class="toOneLine" style="display:none"><a href="'+v.url+'">' + v.value + '</a></div>');
 							contInverse.append(ele)
 						});
 					});
