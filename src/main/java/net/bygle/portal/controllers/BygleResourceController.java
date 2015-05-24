@@ -133,25 +133,27 @@ public class BygleResourceController {
 				/*************** ********* ***************/
 				/*************** resources ***************/
 				/*************** ********* ***************/
-
+				String id = "";
 				{
 					LinkedHashMap<PropertyBean, List<TripleBean>> result = new LinkedHashMap<PropertyBean, List<TripleBean>>();
 					LinkedHashMap<PropertyBean, TripleBean> resultCount = new LinkedHashMap<PropertyBean, TripleBean>();
 					NodeIterator iter = m.listObjectsOfProperty(m.createResource(IRI), m.createProperty(m.getNsPrefixURI("conf"), "searchBox"));
 					while (iter.hasNext()) {
+						id+="^";
 						try {
-
 							RDFNode node = iter.next();
 							RDFNode mainClasses = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainClasses")).next();
 							NodeIterator mainQueryIter = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainQuery"));
 							String mainQuery = mainQueryIter != null && mainQueryIter.hasNext() ? mainQueryIter.next().toString() : defaultMainQuery;
-
+							
 							NodeIterator mainCountQueryIter = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "mainCountQuery"));
 							String mainCountQuery = mainCountQueryIter != null && mainCountQueryIter.hasNext() ? mainCountQueryIter.next().toString() : defaultMainCountQuery;
 							String rdfclass = mainClasses.toString();
 
 							PropertyBean p = Misc.generatePropertyBean(rdfclass, locale.getLanguage(), ontoBean, conf);
-
+							// using the comment to store the query id
+							p.setComment(id);
+							
 							// finding the page link for every classes
 
 							for (String rdfpageclass : confBygle.getMultiConfValue(IRI, "mainClasses")) {

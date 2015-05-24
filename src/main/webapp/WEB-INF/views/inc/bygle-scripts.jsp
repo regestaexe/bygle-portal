@@ -7,10 +7,110 @@
 		});
 		bygleportal.loadMap();
 		bygleportal.addMarkers((document.location.search + "&IRI=${results.getMainIRI()}").replace(/^&/, '?'));
+		bygleportal.initPaginators();
 	});
 
 	var bygleportal = {
 
+		initPaginators : function() {
+			$('.bygpaginator').each(function() {
+				var anchor = $(this);
+				var count = parseInt(anchor.attr('data-tot'), 10);
+				var queryId = anchor.attr("data-queryId");
+
+				if (count > 10) {
+					var prev = $('<a href="#prev" class="prevArrow sp"></a>');
+					var next = $('<a href="#next" class="nextArrow sp"></a>');
+					prev.css({
+						'opacity' : '0.3',
+						'cursor' : 'default'
+					});
+					next.click(function() {
+						return bygleportal.paginating('next', $(this), 0, queryId, count);
+					});
+					anchor.after(next);
+					anchor.after(prev);
+				}
+
+			});
+		},
+		paginating : function(direction, anchor, start, queryId, count) {
+			if (direction == 'next') {
+				start = start + 10;
+			} else if (start > 0) {
+				start = start - 10;
+			}
+			var contInverse = anchor.parent();
+			if (callingPage) {
+				callingPage.abort();
+			}
+			if (callingPageTitles) {
+				callingPageTitles.abort();
+			}
+			callingPage = $.ajax({
+				url : "${conf.getPublicUrlPrefix()}byg.paginator",
+				method : 'GET',
+				data : {
+					"offset" : start,
+					"IRI" : "${results.getMainIRI()}",
+					"queryId" : queryId,
+					"tot" : count
+				},
+				beforeSend : function() {
+					contInverse.find('.toOneLine').addClass('toRemove').css({
+						'opacity' : 0.2
+					});
+					contInverse.find('.prevArrow,.nextArrow').remove();
+					contInverse.find('.lloadingb').show();
+					var prev = $('<a href="#prev" class="prevArrow sp"></a>');
+					var next = $('<a href="#next" class="nextArrow sp"></a>');
+					if (start + 10 > count) {
+						next.css({
+							'opacity' : '0.3',
+							'cursor' : 'default'
+						});
+					} else {
+						next.click(function() {
+							return bygleportal.paginating('next', $(this), start, queryId, count);
+						});
+					}
+					if (start > 0) {
+						prev.click(function() {
+							return bygleportal.paginating('prev', $(this), start, queryId, count);
+						});
+					} else {
+						prev.css({
+							'opacity' : '0.3',
+							'cursor' : 'default'
+						});
+					}
+					contInverse.find('a:first').after(next);
+					contInverse.find('a:first').after(prev);
+				},
+				success : function(data) {
+
+					$.each(data, function(k1, v1) {
+						$.each(v1, function(k, v) {
+							// TODO: manage the links
+							var ele = $('<div class="toOneLine" style="display:none"><a href="/bygle-portal/resource/Amsterdam">' + v.value + '</a></div>');
+							contInverse.append(ele)
+						});
+					});
+
+					contInverse.find('.toOneLine.toRemove').remove();
+					$('.toOneLine', contInverse).show();
+					contInverse.find('.lloadingb').hide();
+					anchor.unbind('click');
+				},
+				complete : function() {
+				},
+				error : function() {
+					contInverse.find('.toOneLine').remove();
+					contInverse.append($("<div class='toOneLine' >sorry, an error occurred</div>"));
+				}
+			});
+			return false;
+		},
 		loadMap : function(dataUrl) {
 			var map = new L.Map('bygmap', {
 				center : latlng = new L.LatLng(0, 0),
@@ -25,7 +125,7 @@
 		addMarkers : function(datasearch) {
 
 			$.ajax({
-				url : '/bygle-portal/byg.map/data' + datasearch,
+				url : '${conf.getPublicUrlPrefix()}byg.map/data' + datasearch,
 				success : function(data) {
 					console.info(data);
 
@@ -55,10 +155,10 @@
 
 						}
 					});
-					if (markers.length > 0) {
+					if (markersList.length > 0) {
 						bygleportal.map.addLayer(markers);
 						bygleportal.map.fitBounds(bounds);
-					}else{
+					} else {
 						$('#bygmap').slideUp('slow');
 					}
 				}

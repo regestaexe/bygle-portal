@@ -80,7 +80,7 @@
 							</c:choose></a>
 					</label>
 					<div class="c4 value isOpened">
-						<a href="${prop.getPropertyUrl()}?${filtersAppender.get('main')}" class="bygpaginator" data-property="${prop.getNsProperty()}">${resultCount.get(prop).getValue() } <sp:message code='label.resources' text='resources' /></a><span class="lloadingb" style="display: none"></span>
+						<a data-queryId="${prop.getComment()}" href="${prop.getPropertyUrl()}?${filtersAppender.get('main')}" class="bygpaginator" data-property="${prop.getNsProperty()}" data-tot="${resultCount.get(prop).getValue() }">${resultCount.get(prop).getValue() } <sp:message code='label.resources' text='resources' /></a><span class="lloadingb" style="display: none"></span>
 						<c:forEach items='${result.get(prop)}' var="iel">
 							<div class="toOneLine">
 								<a href="${Misc.toBrowsableUrl(iel.getIRI(), conf)}">${iel.getValue()}</a>
