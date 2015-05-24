@@ -59,15 +59,16 @@
 		
 		
 		## default configuration, will be overrided by more specific page configurations 
-		conf:defaultSearchBox 	[conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>. 
-									${FILTER:ct:1}
-									${FILTER:ma:1}
+		conf:defaultSearchBox 	[
+								conf:mainQuery """select distinct ?s ?o {?s <http://www.w3.org/2000/01/rdf-schema#label> ?o; a <${CLASS}>. 
+										${FILTER:ct:1}
+										${FILTER:ma:1}
 								 		FILTER langMatches(lang(?o), "${LOCALE}" )
-									} order by asc(?o) LIMIT 10 """;
-						 			conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}> . 
-						 			${FILTER:ma:1}
-						 			${FILTER:ct:1} 
-						 			} """] ;
+										} order by asc(?o) LIMIT 10 """;
+						 		conf:mainCountQuery """select (count(distinct ?s) AS ?o)  {?s a <${CLASS}> . 
+							 			${FILTER:ma:1}
+							 			${FILTER:ct:1} 
+							 			} """] ;
 
 		conf:queryFilters [conf:filterAlias "ct:1"; conf:filterExpression "{?s <http://dbpedia.org/ontology/country> ?ct . ?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
 		conf:queryFilters [conf:filterAlias "ct:2"; conf:filterExpression "{?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
@@ -76,6 +77,12 @@
 		conf:queryFilters [conf:filterAlias "ma:1"; conf:filterExpression "{?s <http://dbpedia.org/ontology/mayor> ?ma . ?ma <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
 		conf:queryFilters [conf:filterAlias "ma:2"; conf:filterExpression "{?ma <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
 		conf:queryFilters [conf:filterAlias "ma:3"; conf:filterExpression "{OPTIONAL{?p <http://dbpedia.org/ontology/mayor> ?ma . ?ma <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}}"]
+	
+	
+		conf:queryFilters [conf:filterAlias "place:1"; conf:filterExpression "{?s <http://dbpedia.org/ontology/country> ?ct . ?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
+		conf:queryFilters [conf:filterAlias "place:2"; conf:filterExpression "{?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}"];
+		conf:queryFilters [conf:filterAlias "place:3"; conf:filterExpression "{OPTIONAL{?p <http://dbpedia.org/ontology/country> ?ct . ?ct <http://www.w3.org/2000/01/rdf-schema#label> ${FILTERVALUE}}}"];
+	
 	
 		.
 
@@ -88,26 +95,18 @@
 		conf:searchBox	[conf:mainClasses	 <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames> ];
   
   		conf:placeFacet	 [conf:alias	"place" ; 
-					 
-						 conf:mainQuery """select ?s ?lat ?long ?label {
-							 		{?s a <http://dbpedia.org/class/yago/HolyCities>. 
-							 			?s <http://www.w3.org/2000/01/rdf-schema#label> ?label;
-							 			<http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat;
-							 			<http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long 
-							 		 }
-							 	UNION 
-							 		{?s  a <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames>. 
-							 			
-							 			?s <http://www.w3.org/2000/01/rdf-schema#label> ?label;
-							 			<http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat;
-							 			<http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long 
-							 		}
-							  		
-							  		${FILTER:ct:2} 
-							  		${FILTER:ma:3}
-							  		
-								  FILTER langMatches(lang(?label), "${LOCALE}" ) 
-							 	}} """];
+						 conf:mainQuery """select ?s ?p ?o {
+						 		{
+									 {?s a <http://dbpedia.org/class/yago/HolyCities>; <http://www.w3.org/2000/01/rdf-schema#label> ?label}
+									 UNION
+									 {?s  a <http://dbpedia.org/class/yago/HostCitiesOfTheSummerOlympicGames>; <http://www.w3.org/2000/01/rdf-schema#label> ?label}									
+						 		}
+					 			?s ?p ?o .
+				 				FILTER((?p = <http://www.w3.org/2000/01/rdf-schema#label>) || (?p = <http://www.w3.org/2003/01/geo/wgs84_pos#lat>) || (?p = <http://www.w3.org/2003/01/geo/wgs84_pos#long>))
+					  			${FILTER:ct:1} 
+					  			${FILTER:ma:1}
+								FILTER langMatches(lang(?label), "${LOCALE}" ) 
+							 	}  """];
 					 
 		conf:facet		[conf:alias	"ct" ; 
 						 conf:facetProperty <http://dbpedia.org/ontology/country> ;

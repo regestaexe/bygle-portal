@@ -21,7 +21,7 @@ import org.dvcama.lodview.bean.PropertyBean;
 import org.dvcama.lodview.bean.ResultBean;
 import org.dvcama.lodview.bean.TripleBean;
 import org.dvcama.lodview.builder.ResourceBuilder;
-import org.dvcama.lodview.controllers.ErrorController; 
+import org.dvcama.lodview.controllers.ErrorController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -95,7 +95,7 @@ public class BygleResourceController {
 		}
 
 		try {
-			List<String> queries = new ArrayList<String>();
+
 			model.addAttribute("contextPath", new UrlPathHelper().getContextPath(req));
 			ResultBean r = new ResourceBuilder(messageSource).buildHtmlResource(IRI, locale, conf, ontoBean);
 			model.addAttribute("results", Misc.guessClass(r, conf, ontoBean));
@@ -193,8 +193,8 @@ public class BygleResourceController {
 
 							// finding the facets for every classes
 							// TODO: merging facets
-							System.out.println(" "+alias.toString());
-							
+							System.out.println(" " + alias.toString());
+
 							facets.put(p, builder.buildHtmlFacets(Misc.parseFilters(filters, confBygle.getFilters(), mainQuery.toString(), locale.getLanguage()), alias.toString(), locale, conf, confBygle, ontoBean));
 							filtersAppender.put(alias.toString(), Misc.urlMinusFilter(filters, confBygle.getFilters(), alias.toString()));
 
@@ -202,6 +202,17 @@ public class BygleResourceController {
 							e.printStackTrace();
 						}
 
+					}
+
+					iter = m.listObjectsOfProperty(m.createResource(IRI), m.createProperty(m.getNsPrefixURI("conf"), "placeFacet"));
+					try {
+						while (iter.hasNext()) {
+							RDFNode node = iter.next();
+							RDFNode alias = m.listObjectsOfProperty(node.asResource(), m.createProperty(m.getNsPrefixURI("conf"), "alias")).next();
+							filtersAppender.put(alias.toString(), Misc.urlMinusFilter(filters, confBygle.getFilters(), alias.toString()));
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 					model.addAttribute("facets", facets);
 					model.addAttribute("filtersAppender", filtersAppender);

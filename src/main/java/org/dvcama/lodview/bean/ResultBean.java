@@ -90,7 +90,9 @@ public class ResultBean {
 	public LinkedHashMap<PropertyBean, List<TripleBean>> getLiterals(String IRI) {
 		return literals.get(IRI);
 	}
-
+	public  Map<String, LinkedHashMap<PropertyBean, List<TripleBean>>> getLiterals() {
+		return literals;
+	}
 	public LinkedHashMap<PropertyBean, List<TripleBean>> getBnodes(String IRI) {
 		return bnodes.get(IRI);
 	}

@@ -110,12 +110,7 @@ public class ResourceBuilder extends org.dvcama.lodview.builder.ResourceBuilder 
 
 	}
 
-	public Map<Object, Object> buildPedegreeData(String iRI, Model m, org.dvcama.lodview.conf.ConfigurationBean conf) {
-		Map<Object, Object> result = new HashMap<Object, Object>();
 
-		result.put("prova", "prova");
 
-		return result;
-	}
 
 }

@@ -1,19 +1,17 @@
 <%@page session="true"%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%><%@taglib uri="http://www.springframework.org/tags" prefix="sp"%>
 <script>
 	$(function() {
-
 		$(window).on('resize', function() {
-
 		});
-
 		$(window).on('load', function() {
 		});
 		bygleportal.loadMap();
+		bygleportal.addMarkers((document.location.search + "&IRI=${results.getMainIRI()}").replace(/^&/, '?'));
 	});
 
 	var bygleportal = {
 
-		loadMap : function() {
+		loadMap : function(dataUrl) {
 			var map = new L.Map('bygmap', {
 				center : latlng = new L.LatLng(0, 0),
 				scrollWheelZoom : false,
@@ -22,48 +20,49 @@
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution : '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(map);
-			this.addMarkers(map);
+			this.map = map;
 		},
-		addMarkers : function(map) {
+		addMarkers : function(datasearch) {
 
-			/* map *//* 	L.DomUtil.get('populate').onclick = function() {
-			 var bounds = map.getBounds(), southWest = bounds.getSouthWest(), northEast = bounds.getNorthEast(), lngSpan = northEast.lng - southWest.lng, latSpan = northEast.lat - southWest.lat;
-			 var m = new L.Marker(new L.LatLng(southWest.lat + latSpan * 0.5, southWest.lng + lngSpan * 0.5));
-			 markersList.push(m);
-			 markers.addLayer(m);
-			 };
-			 L.DomUtil.get('remove').onclick = function() {
-			 markers.removeLayer(markersList.pop());
-			 }; */
-			var markers = new L.MarkerClusterGroup();
-			var markersList = [];
+			$.ajax({
+				url : '/bygle-portal/byg.map/data' + datasearch,
+				success : function(data) {
+					console.info(data);
 
-			function populateRandomVector(map) {
-				for (var i = 0, latlngs = [], len = 20; i < len; i++) {
-					latlngs.push(getRandomLatLng(map));
+					var markers = new L.MarkerClusterGroup();
+					var markersList = [];
+					var bounds = [];
+
+					/* 			markers.on('clusterclick', function(a) {
+									alert('cluster ' + a.layer.getAllChildMarkers().length);
+								});
+								markers.on('click', function(a) {
+									alert('marker ' + a.layer);
+								});
+					 */
+					$.each(data, function(k, v) {
+						// a place
+						try {
+							var mdata = {};
+							var m = new L.Marker(new L.LatLng(v.data['lat'][0], v.data['long'][0]), mdata);
+							bounds.push([ v.data['lat'][0], v.data['long'][0] ]);
+
+							var popContent = v.data['label'].join(', ') + '<br><br>' + '<a href="'+v.filterurl+'">use as filter</a> <br> or <a href="'+v.url+'">open resource: ' + (v.nsIRI.indexOf('null') == -1 ? v.nsIRI : k) + '</a>' + '<br>';
+							m.bindPopup(popContent);
+							markersList.push(m);
+							markers.addLayer(m);
+						} catch (e) {
+
+						}
+					});
+					if (markers.length > 0) {
+						bygleportal.map.addLayer(markers);
+						bygleportal.map.fitBounds(bounds);
+					}else{
+						$('#bygmap').slideUp('slow');
+					}
 				}
-				var path = new L.Polyline(latlngs);
-				map.addLayer(path);
-			}
-			function getRandomLatLng(map) {
-				var bounds = map.getBounds(), southWest = bounds.getSouthWest(), northEast = bounds.getNorthEast(), lngSpan = northEast.lng - southWest.lng, latSpan = northEast.lat - southWest.lat;
-
-				return new L.LatLng(southWest.lat + latSpan * Math.random(), southWest.lng + lngSpan * Math.random());
-			}
-
-			markers.on('clusterclick', function(a) {
-				alert('cluster ' + a.layer.getAllChildMarkers().length);
 			});
-			markers.on('click', function(a) {
-				alert('marker ' + a.layer);
-			});
-
-			for (var i = 0; i < 100; i++) {
-				var m = new L.Marker(getRandomLatLng(map));
-				markersList.push(m);
-				markers.addLayer(m);
-			}
-			map.addLayer(markers);
 
 		}
 
